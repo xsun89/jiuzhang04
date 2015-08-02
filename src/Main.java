@@ -1,6 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Solutions solutions = new Solutions();
+        System.out.println(solutions.climbStairs(3));
     }
 }
