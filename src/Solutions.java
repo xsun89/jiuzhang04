@@ -134,25 +134,49 @@ public class Solutions {
         int max = Integer.MIN_VALUE;
 
         for (int i = 1; i <= n; i++) {
-            int tmp = getMax(p, n - i);
-            System.out.println(i + "=" + tmp);
-            max = Math.max(max, p[i - 1] + tmp);
+            max = Math.max(max, p[i - 1] + getMax(p, n - i));
         }
-
         return max;
     }
 
-    public int getMax2(int[] p, int n){
-        if(n<=0){
+    //isPalindrome[i][j]代表i到j是否为一个回文串
+    private boolean[][] getIsPalindrome(String s){
+        int length = s.length();
+        boolean[][] isPalindrome = new boolean[length][length];
+        for(int i=0; i<length; i++){
+            isPalindrome[i][i] = true;
+        }
+        for(int i=0; i<length-1; i++){
+            isPalindrome[i][i+1] = s.charAt(i) == s.charAt(i+1);
+        }
+
+        for(int len=2; len<length; len++){
+            for(int start=0; start<length-len;start++){
+                isPalindrome[start][start+len] = isPalindrome[start+1][start+len-1] && s.charAt(start) == s.charAt(start+len);
+            }
+        }
+
+        return isPalindrome;
+    }
+
+    public int minCut(String s){
+        if(s == null || s.length() == 0){
             return 0;
         }
+        //f[i]表示将前i个字符组成的子串进行划分，能够最少划分为多少个串，每个串都是回文串
+        int[] f = new int[s.length()+1];
+        boolean[][] isPalindrome = getIsPalindrome(s);
+        for (int i = 0; i <= s.length(); i++) {
+            f[i] = i-1;
+        }
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if(isPalindrome[j][i-1])
+                    f[i] = Math.min(f[i], f[j]+1);
+            }
 
-        int max = Integer.MIN_VALUE;
-
-        for(int i=1; i<=n; i++){
-            max = Math.max(max, p[i-1] + getMax2(p, n-i));
         }
 
-        return max;
+        return f[s.length()];
     }
 }
