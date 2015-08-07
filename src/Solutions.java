@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by xsun on 15-07-31.
@@ -173,10 +175,58 @@ public class Solutions {
             for (int j = 0; j < i; j++) {
                 if(isPalindrome[j][i-1])
                     f[i] = Math.min(f[i], f[j]+1);
+
             }
 
         }
 
         return f[s.length()];
+    }
+
+    public boolean wordBreak(String str, Set<String> dict){
+        if(str == null || str.length() == 0){
+            return true;
+        }
+
+        int maxLen = 0;
+        for(String word : dict){
+            maxLen = Math.max(maxLen, word.length());
+        }
+
+        boolean[] canBreak = new boolean[str.length()+1];
+        canBreak[0] = true;
+        for (int i = 1; i <= str.length(); i++) {
+            canBreak[i] = false;
+            for(int j=1; j<=maxLen && j<=i; j++){
+                if(!canBreak[i-j]){
+                    continue;
+                }
+                String word = str.substring(i - j, i);
+                //如果dict包含word,canSegment[i]设为true,break
+                if (dict.contains(word)) {
+                    canBreak[i] = true;
+                    break;
+                }
+            }
+
+        }
+
+        return canBreak[str.length()];
+    }
+
+    public int longestCommanSubsequence(String A, String B){
+        int n = A.length();
+        int m = B.length();
+        int f[][] = new int[n+1][m+1];
+        for(int i= 1; i<=n; i++){
+            for(int j=1; j<m; j++){
+                f[i][j] = Math.max(f[i-1][j], f[j][i-1]);
+                if(A.charAt(i-1) == B.charAt(j-1)){
+                    f[i][j] = f[i-1][j-1] + 1;
+                }
+            }
+        }
+
+        return f[n][m];
     }
 }
